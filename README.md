@@ -24,8 +24,11 @@ sudo responder -wA -I tun0 -v
 Always google open ports, not just services shown/guessed by nmap
 
 .dockerenv in / means you're in a docker container
+
 ${IFS} can be used in place of whitespace when no whitespace allowed
+
 jd-gui used to decompile jar files
+
 gitdump used to dump .git directories
 
 ## MySQL
@@ -99,9 +102,11 @@ cd /var/mail && cd /var/spool/mail
 ```
 
 look in all interesting folders, .git, .config, /var/www, /, .local
+
 check /var/www, use ls -la. .env is common php password storage thingie
 
 ## Web
 
 https://beautifier.io/ - Use detect packers & obfuscators
+
 https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/
