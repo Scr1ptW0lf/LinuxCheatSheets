@@ -66,6 +66,7 @@ show tables;
 mysql can usually write into /var/lib/mysql/
 
 SELECT "bashscript" into outfile '/dev/shm/malware.sh';
+
 SELECT from_base64("base64encoded") into outfile '/dev/shm/nothing.txt';
 
 
@@ -92,13 +93,14 @@ reset
 
 /home/kali/php-reverse-shell.php is php reverse shell that can be uploaded to php server
 
-For things running on localhost, if you have ssh session then you can forward it to yourself
-Using ~C , then -L 8080:localhost:8080
+For things running on localhost, if you have ssh session then you can forward it to yourself using ~C , then -L 8080:localhost:8080
 
 ## PHP
 
 With PHP, can put <?php exec("command"); ?> in a .php file then call it
+
 Or exec("command"); in interactive php
+
 Remember to base encode, and not have + in them as will fuck with url encoding. double base encoding usually works well
 
 Also, when calling .php files try both with and without the extension in web browser...
